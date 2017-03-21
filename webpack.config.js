@@ -1,15 +1,25 @@
+const { resolve } = require('path');
+const webpack = require('webpack');
+
 module.exports = {
-  entry: './src',
+  entry: [
+    'react-hot-loader/patch',
+    'webpack-dev-server/client?http://localhost:8080',
+    'webpack/hot/only-dev-server',
+    './src'
+  ],
   output: {
     path: './public',
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    publicPath: '/'
   },
+  devtool: 'inline-source-map',
   module: {
     loaders: [{
       exclude: /node_modules/,
       loader: 'babel',
       query: {
-        presets: ['react', 'es2015', 'stage-1']
+        presets: ['react-hot', 'es2015', 'stage-1']
       }
     },
     {
@@ -23,6 +33,12 @@ module.exports = {
   },
   devServer: {
     historyApiFallback: true,
-    contentBase: './public'
-  }
+    contentBase: resolve(__dirname, 'public'),
+    hot: true,
+    publicPath: '/'
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin()
+  ]
 }
